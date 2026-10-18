@@ -41,7 +41,7 @@ export function SobreCard({ sobre, balance, loading, disabled, onPagar, onMover 
           <span className="font-headline-sm text-headline-sm text-on-surface-variant font-semibold">USDp</span>
         </div>
         <span className="font-currency-reference text-currency-reference text-on-surface-variant mt-0.5">
-          {sinCuenta ? "Sin cuenta en .env" : `≈ ${formatBs(balance ?? 0)} Bs ref.`}
+          {sinCuenta ? "Preparando la cuenta" : `≈ ${formatBs(balance ?? 0)} Bs ref.`}
         </span>
       </div>
 

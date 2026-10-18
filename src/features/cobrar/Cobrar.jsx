@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
-import { COLEGIO_PUBLIC, COMERCIO } from "../../config.js";
+import { COMERCIO, demo } from "../../config.js";
 import { saveLastCobro } from "../../lib/contacts.js";
 import { formatAmount, formatBs, shortKey } from "../../lib/format.js";
 import { buildPayLink } from "../../lib/sep7.js";
@@ -29,15 +29,15 @@ export function Cobrar({ ready }) {
   function generar() {
     const amount = Number(monto);
     const memo = concepto.trim();
-    const link = buildPayLink({ destination: COLEGIO_PUBLIC, amount, memo });
-    const nuevo = { link, amount, memo, destination: COLEGIO_PUBLIC };
+    const link = buildPayLink({ destination: demo.colegioPublic, amount, memo });
+    const nuevo = { link, amount, memo, destination: demo.colegioPublic };
     setCobro(nuevo);
     saveLastCobro(nuevo);
   }
 
   async function copiarCuenta() {
     try {
-      await navigator.clipboard.writeText(COLEGIO_PUBLIC);
+      await navigator.clipboard.writeText(demo.colegioPublic);
       setCopiedKey(true);
       setTimeout(() => setCopiedKey(false), 2000);
     } catch {
@@ -65,9 +65,9 @@ export function Cobrar({ ready }) {
           <button
             type="button"
             onClick={copiarCuenta}
-            disabled={!COLEGIO_PUBLIC}
+            disabled={!demo.colegioPublic}
             aria-label={copiedKey ? "Cuenta copiada" : "Copiar cuenta del colegio"}
-            title={COLEGIO_PUBLIC ? `Copiar cuenta ${shortKey(COLEGIO_PUBLIC)}` : "Sin cuenta en .env"}
+            title={demo.colegioPublic ? `Copiar cuenta ${shortKey(demo.colegioPublic)}` : "Preparando la cuenta"}
             className="w-10 h-10 rounded-xl bg-surface-container flex items-center justify-center text-on-surface-variant hover:text-primary transition-colors disabled:opacity-40"
           >
             <Icon name={copiedKey ? "check" : "key"} size={20} />
@@ -99,7 +99,7 @@ export function Cobrar({ ready }) {
       <NuevoCobro
         monto={monto}
         concepto={concepto}
-        disabled={!COLEGIO_PUBLIC}
+        disabled={!demo.colegioPublic}
         onMonto={setMonto}
         onConcepto={setConcepto}
         onGenerar={generar}

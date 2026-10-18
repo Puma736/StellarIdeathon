@@ -2,7 +2,7 @@ import { Icon } from "../ui/Icon.jsx";
 import { NAV } from "./nav.js";
 
 /** Barra superior. En el celular lleva el logo; en laptop, la sección activa. */
-export function Header({ ready, tab }) {
+export function Header({ ready, tab, pending }) {
   const current = NAV.find((item) => item.id === tab);
 
   return (
@@ -19,7 +19,7 @@ export function Header({ ready, tab }) {
             <div className="flex items-center gap-1.5 mt-1">
               <span className={`w-2 h-2 rounded-full ${ready ? "bg-primary animate-pulse" : "bg-secondary-container"}`} />
               <span className="font-label-sm text-label-sm text-on-surface-variant font-medium leading-none">
-                {ready ? "Red Stellar Activa" : "Sin cuentas de demo (.env)"}
+                {ready ? "Red Stellar Activa" : pending || "Preparando testnet"}
               </span>
             </div>
           </div>
@@ -35,7 +35,7 @@ export function Header({ ready, tab }) {
         <div className="flex items-center gap-3">
           <span className="hidden lg:inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-surface-container-lowest text-on-surface-variant font-label-sm text-label-sm">
             <span className={`w-1.5 h-1.5 rounded-full ${ready ? "bg-primary" : "bg-secondary-container"}`} />
-            {ready ? "Testnet" : "Sin .env"}
+            {ready ? "Testnet" : "Preparando"}
           </span>
           <div className="w-8 h-8 rounded-full bg-primary flex items-center justify-center">
             <Icon name="person" size={18} className="text-on-primary" />

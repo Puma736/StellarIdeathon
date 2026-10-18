@@ -1,4 +1,4 @@
-import { ASSET_CODE, ASSET_ISSUER } from "../config.js";
+import { ASSET_CODE, demo } from "../config.js";
 import { toStellarAmount } from "./split.js";
 
 const SCHEME = "web+stellar:pay";
@@ -7,7 +7,7 @@ const SCHEME = "web+stellar:pay";
  * Enlace de cobro SEP-0007:
  *   web+stellar:pay?destination=G...&amount=60&asset_code=USDp&asset_issuer=G...&memo=Matricula%20marzo&memo_type=MEMO_TEXT
  */
-export function buildPayLink({ destination, amount, memo, assetCode = ASSET_CODE, assetIssuer = ASSET_ISSUER }) {
+export function buildPayLink({ destination, amount, memo, assetCode = ASSET_CODE, assetIssuer = demo.assetIssuer }) {
   const params = new URLSearchParams();
   params.set("destination", destination);
   if (amount) params.set("amount", trimZeros(toStellarAmount(amount)));
@@ -57,7 +57,7 @@ export function parsePayLink(raw) {
 
 /** El cobro pide el mismo asset que mueve la demo. */
 export function isDemoAsset(cobro) {
-  return cobro.assetCode === ASSET_CODE && cobro.assetIssuer === ASSET_ISSUER;
+  return cobro.assetCode === ASSET_CODE && cobro.assetIssuer === demo.assetIssuer;
 }
 
 function trimZeros(s) {

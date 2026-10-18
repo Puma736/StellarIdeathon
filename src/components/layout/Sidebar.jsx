@@ -2,7 +2,7 @@ import { Icon } from "../ui/Icon.jsx";
 import { NAV } from "./nav.js";
 
 /** Navegación de laptop: logo, las tres pantallas y el estado de la red. */
-export function Sidebar({ active, onChange, ready }) {
+export function Sidebar({ active, onChange, ready, pending }) {
   return (
     <aside className="hidden lg:flex fixed inset-y-0 left-0 z-40 w-[260px] flex-col bg-surface-container-lowest border-r border-surface-container-high">
       <div className="h-16 px-5 flex items-center gap-3 border-b border-surface-container-high">
@@ -46,7 +46,7 @@ export function Sidebar({ active, onChange, ready }) {
         <div className="flex items-center gap-2">
           <span className={`w-2 h-2 rounded-full ${ready ? "bg-primary animate-pulse" : "bg-secondary-container"}`} />
           <span className="font-label-sm text-label-sm text-on-surface-variant">
-            {ready ? "Testnet · Stellar activa" : "Sin cuentas en .env"}
+            {ready ? "Testnet · Stellar activa" : pending || "Preparando testnet"}
           </span>
         </div>
       </div>

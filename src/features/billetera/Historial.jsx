@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { SENDER_CITY, SENDER_NAME, SENDER_PUBLIC, sobreById } from "../../config.js";
+import { SENDER_CITY, SENDER_NAME, demo, sobreById } from "../../config.js";
 import { expertUrl } from "../../lib/expert.js";
 import { formatAmount, formatDate, shortKey } from "../../lib/format.js";
 import { Icon } from "../../components/ui/Icon.jsx";
@@ -43,7 +43,7 @@ export function Historial({ items, loading, error }) {
                 <div className="flex items-center gap-2">
                   <Icon name="south_west" size={20} className="text-primary" />
                   <span className="font-headline-sm text-headline-sm text-on-surface font-semibold">
-                    {env.de === SENDER_PUBLIC ? `${SENDER_NAME}, ${SENDER_CITY}` : shortKey(env.de)}
+                    {env.de === demo.senderPublic ? `${SENDER_NAME}, ${SENDER_CITY}` : shortKey(env.de)}
                   </span>
                 </div>
                 <span className="font-label-sm text-label-sm text-on-surface-variant">{formatDate(env.fecha)}</span>

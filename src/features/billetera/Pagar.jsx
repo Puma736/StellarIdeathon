@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { COLEGIO_PUBLIC, COMERCIO, SOBRES, sobreByPublic } from "../../config.js";
+import { COMERCIO, SOBRES, demo, sobreByPublic } from "../../config.js";
 import { expertUrl } from "../../lib/expert.js";
 import { formatAmount, formatBs, formatUsd, shortKey } from "../../lib/format.js";
 import { isDemoAsset } from "../../lib/sep7.js";
@@ -15,7 +15,7 @@ export function Pagar({ cobro, balances, preselectId, onBack, onPaid }) {
   const puede = (s) => s.publicKey && (balances[s.id] ?? 0) >= (cobro.amount ?? 0);
   const inicial =
     (preselectId && puede(SOBRES.find((s) => s.id === preselectId)) && preselectId) ||
-    (cobro.destination === COLEGIO_PUBLIC && puede(SOBRES.find((s) => s.id === "colegio")) && "colegio") ||
+    (cobro.destination === demo.colegioPublic && puede(SOBRES.find((s) => s.id === "colegio")) && "colegio") ||
     SOBRES.find(puede)?.id ||
     null;
 
@@ -24,7 +24,7 @@ export function Pagar({ cobro, balances, preselectId, onBack, onPaid }) {
   const [error, setError] = useState(null);
   const [result, setResult] = useState(null);
 
-  const esColegio = cobro.destination === COLEGIO_PUBLIC;
+  const esColegio = cobro.destination === demo.colegioPublic;
   const esSobre = sobreByPublic(cobro.destination);
   const nombreDestino = esColegio ? COMERCIO.nombre : esSobre ? `Sobre ${esSobre.nombre}` : shortKey(cobro.destination, 6);
   const assetOk = isDemoAsset(cobro);
@@ -226,7 +226,7 @@ export function Pagar({ cobro, balances, preselectId, onBack, onPaid }) {
                   <div className="mt-space-sm pt-space-xs flex items-center gap-1.5 text-error">
                     <Icon name="info" size={16} />
                     <span className="font-label-sm text-label-sm">
-                      {s.publicKey ? `Saldo insuficiente (faltan ${formatAmount(monto - saldo)} USDp)` : "Sin cuenta en .env"}
+                      {s.publicKey ? `Saldo insuficiente (faltan ${formatAmount(monto - saldo)} USDp)` : "Preparando la cuenta"}
                     </span>
                   </div>
                 ) : s.protegido ? (

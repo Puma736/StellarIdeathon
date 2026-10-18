@@ -89,13 +89,46 @@ export function sobreByPublic(publicKey) {
   return SOBRES.find((s) => s.publicKey && s.publicKey === publicKey) || null;
 }
 
-/** La demo puede firmar solo si .env trae todas las cuentas. */
+/**
+ * Cuentas vivas de la demo. Empiezan en .env si existe.
+ * En Vercel no hay .env: `ensureDemoAccounts` las crea en el navegador
+ * y las escribe aquí. Quien firme tiene que leer este objeto en el momento, no una copia.
+ */
+export const demo = {
+  senderSecret: SENDER_SECRET,
+  senderPublic: SENDER_PUBLIC,
+  assetIssuer: ASSET_ISSUER,
+  colegioPublic: COLEGIO_PUBLIC,
+  feePublic: FEE_PUBLIC,
+};
+
+/** Mete un juego de cuentas (env o las creadas en el navegador) en `demo` y en los sobres. */
+export function applyDemo(next) {
+  demo.senderSecret = next.senderSecret || "";
+  demo.senderPublic = publicFromSecret(demo.senderSecret);
+  demo.assetIssuer = next.assetIssuer || demo.senderPublic;
+  demo.colegioPublic = next.colegioPublic || "";
+  demo.feePublic = next.feePublic || "";
+  const secrets = {
+    casa: next.casaSecret,
+    colegio: next.colegioSobreSecret,
+    salud: next.saludSecret,
+  };
+  for (const sobre of SOBRES) {
+    if (!secrets[sobre.id]) continue;
+    sobre.secret = secrets[sobre.id];
+    sobre.publicKey = publicFromSecret(secrets[sobre.id]);
+  }
+}
+
+/** La demo puede firmar si hay emisor, sobres, colegio y cuenta de la comisión. */
 export function hasDemoAccounts() {
   return Boolean(
-    SENDER_SECRET &&
-      FEE_PUBLIC &&
-      COLEGIO_PUBLIC &&
-      SOBRES.every((s) => s.publicKey),
+    demo.senderSecret &&
+      demo.feePublic &&
+      demo.colegioPublic &&
+      demo.assetIssuer &&
+      SOBRES.every((s) => s.publicKey && s.secret),
   );
 }
 

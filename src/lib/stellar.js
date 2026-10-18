@@ -8,7 +8,6 @@ import {
 } from "@stellar/stellar-sdk";
 import {
   ASSET_CODE,
-  ASSET_ISSUER,
   COLEGIO_PUBLIC,
   FEE_PUBLIC,
   HORIZON_URL,
@@ -17,6 +16,7 @@ import {
   NETWORK_PASSPHRASE,
   SENDER_SECRET,
   SOBRES,
+  demo,
   hasDemoAccounts,
 } from "../config.js";
 import { truncateBytes } from "./format.js";
@@ -26,7 +26,7 @@ const server = new Horizon.Server(HORIZON_URL);
 
 /** USDp emitido por la cuenta de la demo. */
 export function demoAsset() {
-  return ASSET_ISSUER ? new Asset(ASSET_CODE, ASSET_ISSUER) : Asset.native();
+  return demo.assetIssuer ? new Asset(ASSET_CODE, demo.assetIssuer) : Asset.native();
 }
 
 /** `REPARTE Matrícula marzo`, recortado a 28 bytes. */
@@ -42,10 +42,10 @@ export function buildMemo(mensaje) {
  */
 export async function sendSplit({ sobres, comision, mensaje }) {
   if (!hasDemoAccounts()) {
-    throw new Error("Faltan las cuentas de la demo en .env. Corre `npm run cuentas`.");
+    throw new Error("Las cuentas de la demo todavía no están listas.");
   }
 
-  const sender = Keypair.fromSecret(SENDER_SECRET);
+  const sender = Keypair.fromSecret(demo.senderSecret || SENDER_SECRET);
   const asset = demoAsset();
 
   const [account, baseFee] = await Promise.all([
@@ -60,7 +60,7 @@ export async function sendSplit({ sobres, comision, mensaje }) {
 
   for (const parte of sobres) {
     const sobre = SOBRES.find((s) => s.id === parte.id);
-    if (!sobre?.publicKey) throw new Error(`El sobre ${parte.id} no tiene cuenta en .env.`);
+    if (!sobre?.publicKey) throw new Error(`El sobre ${parte.id} todavía no tiene cuenta.`);
     builder.addOperation(
       Operation.payment({
         destination: sobre.publicKey,
@@ -73,7 +73,7 @@ export async function sendSplit({ sobres, comision, mensaje }) {
   if (comision > 0) {
     builder.addOperation(
       Operation.payment({
-        destination: FEE_PUBLIC,
+        destination: demo.feePublic || FEE_PUBLIC,
         asset,
         amount: toStellarAmount(comision),
       }),
@@ -92,7 +92,7 @@ export async function sendSplit({ sobres, comision, mensaje }) {
  */
 export async function payFromEnvelope({ sobreId, destination, amount, memo }) {
   const sobre = SOBRES.find((s) => s.id === sobreId);
-  if (!sobre?.secret) throw new Error("Ese sobre no tiene clave en .env.");
+  if (!sobre?.secret) throw new Error("Ese sobre todavía no tiene cuenta.");
 
   const kp = Keypair.fromSecret(sobre.secret);
   const [account, baseFee] = await Promise.all([
@@ -121,7 +121,7 @@ export async function payFromEnvelope({ sobreId, destination, amount, memo }) {
 /** Mover saldo entre dos sobres de la misma familia. */
 export async function moveBetweenEnvelopes({ fromId, toId, amount }) {
   const destino = SOBRES.find((s) => s.id === toId);
-  if (!destino?.publicKey) throw new Error("El sobre destino no tiene cuenta en .env.");
+  if (!destino?.publicKey) throw new Error("El sobre destino todavía no tiene cuenta.");
   return payFromEnvelope({
     sobreId: fromId,
     destination: destino.publicKey,
@@ -195,17 +195,18 @@ export async function loadHistory(limit = 50) {
  *   [{ hash, fecha, de, concepto, monto }]
  */
 export async function loadReceived(limit = 50) {
-  if (!COLEGIO_PUBLIC) return [];
+  const colegio = demo.colegioPublic || COLEGIO_PUBLIC;
+  if (!colegio) return [];
   const page = await server
     .payments()
-    .forAccount(COLEGIO_PUBLIC)
+    .forAccount(colegio)
     .join("transactions")
     .order("desc")
     .limit(limit)
     .call();
 
   return page.records
-    .filter((r) => r.type === "payment" && r.to === COLEGIO_PUBLIC && isDemoAsset(r))
+    .filter((r) => r.type === "payment" && r.to === colegio && isDemoAsset(r))
     .map((r) => ({
       hash: r.transaction_hash,
       fecha: r.created_at,
@@ -248,7 +249,7 @@ function describeHorizonError(err) {
 
   const ops = codes.operations?.join(", ") || "";
   if (ops.includes("op_no_trust")) {
-    return "La cuenta destino no tiene trustline a USDp. Corre `npm run cuentas`.";
+    return "La cuenta destino no tiene trustline a USDp.";
   }
   if (ops.includes("op_underfunded")) {
     return "El sobre no tiene saldo suficiente para este pago.";
