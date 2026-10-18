@@ -1,257 +1,94 @@
-:root {
-  --bg: #f6f3ee;
-  --ink: #1d1b19;
-  --muted: #6b655d;
-  --line: #e2dcd3;
-  --paper: #ffffff;
-  --today: #1f6f5f;
-  --today-soft: #e3f1ec;
-  --quota: #b4531b;
-  --quota-soft: #fbe9dc;
-  --error: #a4262c;
-  --radius: 14px;
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
-  font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
-  line-height: 1.5;
-  color: var(--ink);
-  background: var(--bg);
-  -webkit-font-smoothing: antialiased;
+@layer base {
+  html,
+  body {
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    background-color: #fff8f4;
+  }
+  body {
+    overscroll-behavior: none;
+    -webkit-tap-highlight-color: transparent;
+    font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  }
+  .pb-safe {
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+  }
+  .pt-safe {
+    padding-top: env(safe-area-inset-top, 0px);
+  }
+  ::-webkit-scrollbar {
+    display: none;
+  }
+  input[type="number"]::-webkit-outer-spin-button,
+  input[type="number"]::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+  input[type="number"] {
+    -moz-appearance: textfield;
+  }
 }
 
-* {
-  box-sizing: border-box;
-}
-
-body {
-  margin: 0;
-  min-height: 100vh;
-}
-
-code {
-  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
-  font-size: 0.9em;
-  background: #efebe4;
-  padding: 0.1em 0.4em;
-  border-radius: 6px;
-}
-
-/* Página única */
-
-.page {
-  max-width: 640px;
-  margin: 0 auto;
-  padding: 2.5rem 1.25rem 4rem;
-  display: grid;
-  gap: 1.25rem;
-}
-
-.hero {
-  padding-bottom: 0.5rem;
-}
-
-.track {
-  margin: 0 0 0.25rem;
-  font-size: 0.8rem;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: var(--muted);
-}
-
-h1 {
-  margin: 0;
-  font-size: 2.5rem;
-  letter-spacing: -0.02em;
-}
-
-.lead {
-  margin: 0.5rem 0 0;
-  font-size: 1.1rem;
-  color: var(--muted);
-}
-
-/* Los tres momentos */
-
-.moment {
-  background: var(--paper);
-  border: 1px solid var(--line);
-  border-radius: var(--radius);
-  padding: 1.5rem;
-}
-
-.where {
-  margin: 0;
-  font-size: 0.8rem;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: var(--muted);
-}
-
-.moment h2 {
-  margin: 0.15rem 0 1rem;
-  font-size: 1.4rem;
-}
-
-/* Madrid */
-
-.fields {
-  display: grid;
-  gap: 1rem;
-}
-
-label {
-  display: grid;
-  gap: 0.35rem;
-  font-size: 0.95rem;
-}
-
-label span {
-  color: var(--muted);
-}
-
-input {
-  font: inherit;
-  padding: 0.65rem 0.8rem;
-  border: 1px solid var(--line);
-  border-radius: 10px;
-  background: #fff;
-  color: var(--ink);
-}
-
-input:focus {
-  outline: 2px solid var(--today);
-  outline-offset: 1px;
-}
-
-input:disabled {
-  opacity: 0.6;
-}
-
-.preview {
-  margin: 1.25rem 0 0;
-  padding-top: 1rem;
-  border-top: 1px dashed var(--line);
-  font-size: 1.1rem;
-}
-
-/* Enviar */
-
-.fee {
-  margin: 0 0 1rem;
-  color: var(--muted);
-  font-size: 0.95rem;
-}
-
-.send {
-  font: inherit;
-  font-weight: 600;
-  width: 100%;
-  padding: 0.9rem 1.2rem;
-  border: 0;
-  border-radius: 12px;
-  background: var(--ink);
-  color: #fff;
-  cursor: pointer;
-}
-
-.send:hover:not(:disabled) {
-  background: #000;
-}
-
-.send:disabled {
-  background: #bdb6ad;
-  cursor: not-allowed;
-}
-
-.hint {
-  margin: 0.9rem 0 0;
-  font-size: 0.9rem;
-  color: var(--muted);
-}
-
-.error {
-  margin: 0.9rem 0 0;
-  padding: 0.75rem 0.9rem;
-  border-radius: 10px;
-  background: #fbe4e5;
-  color: var(--error);
-  font-size: 0.95rem;
-}
-
-/* La Paz */
-
-.cards {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 1rem;
-}
-
-.card {
-  border-radius: 12px;
-  padding: 1.1rem 1.2rem;
-}
-
-.card.today {
-  background: var(--today-soft);
-  color: var(--today);
-}
-
-.card.quota {
-  background: var(--quota-soft);
-  color: var(--quota);
-}
-
-.card .label {
-  margin: 0;
-  font-size: 0.8rem;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-}
-
-.card .amount {
-  margin: 0.2rem 0 0;
-  font-size: 2.2rem;
-  font-weight: 700;
-  letter-spacing: -0.02em;
-}
-
-.card .note {
-  margin: 0.35rem 0 0;
-  font-size: 0.85rem;
-  opacity: 0.85;
-}
-
-.moment.sent .card {
-  box-shadow: inset 0 0 0 2px currentColor;
-}
-
-.proof {
-  margin-top: 1.25rem;
-  display: grid;
-  gap: 0.5rem;
-}
-
-.proof a {
-  color: var(--today);
-  font-weight: 600;
-}
-
-.proof code {
-  word-break: break-all;
-  font-size: 0.8rem;
-}
-
-.foot {
-  text-align: center;
-  font-size: 0.85rem;
-  color: var(--muted);
-}
-
-@media (max-width: 480px) {
-  h1 {
-    font-size: 2rem;
+@layer components {
+  /* Íconos de Material Symbols: la clase base viene de Google Fonts, esto evita saltos de layout. */
+  .material-symbols-outlined {
+    display: inline-block;
+    line-height: 1;
+    user-select: none;
+    vertical-align: middle;
+  }
+  .material-symbols-outlined.is-filled {
+    font-variation-settings: "FILL" 1;
   }
 
-  .cards {
-    grid-template-columns: 1fr;
+  /* Barra de porcentaje de los sobres: un range que se ve como la barra del diseño. */
+  .sobre-range {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 100%;
+    height: 10px;
+    border-radius: 9999px;
+    outline: none;
+    cursor: pointer;
+    background: #ede7e3;
+  }
+  .sobre-range::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 18px;
+    height: 18px;
+    border-radius: 9999px;
+    background: #ffffff;
+    border: 3px solid var(--sobre-color, #1f6f5f);
+    box-shadow: 0 1px 3px rgba(29, 27, 25, 0.2);
+  }
+  .sobre-range::-moz-range-thumb {
+    width: 18px;
+    height: 18px;
+    border-radius: 9999px;
+    background: #ffffff;
+    border: 3px solid var(--sobre-color, #1f6f5f);
+    box-shadow: 0 1px 3px rgba(29, 27, 25, 0.2);
+  }
+  .sobre-range:disabled {
+    cursor: default;
+    opacity: 0.7;
+  }
+
+  .sheet-enter {
+    animation: sheet-up 260ms cubic-bezier(0.2, 0.8, 0.2, 1);
+  }
+  @keyframes sheet-up {
+    from {
+      transform: translateY(100%);
+    }
+    to {
+      transform: translateY(0);
+    }
   }
 }
